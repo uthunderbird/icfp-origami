@@ -45,8 +45,12 @@ snapshot_url = base_url + "snapshot/list"
 blob_url = base_url + "blob/{hash}"
 solution_submit_url = base_url + "solution/submit"
 
+api_key = open('api_key').read()
+
 session = requests.Session()
-session.headers.update({'X-API-Key': open('api_key').read()})
+session.headers.update({'X-API-Key': api_key})
+
+our_id = api_key.split('-', 1)[0]
 
 state_holder = {'last_request': 0}
 
@@ -162,7 +166,7 @@ def snapshot():
 @cacher(cache_mode="permanent_by_arg", cache_params={'arg': 0})
 @api_endpoint()
 def blob(hash_):
-    logging.info("Trying to get hash: ", hash_)
+    logging.info("Trying to get hash: {}".format(hash_))
     return session.get(blob_url.format(hash=hash_))
 
 
@@ -195,7 +199,7 @@ def get_problem_spec(i):
 
 
 def where_we_are():
-    pass
+    return list(map(lambda x: x['username'], status()['leaderboard'])).index(our_id) + 1
 
 if __name__ == '__main__':
     import argparse
@@ -209,9 +213,8 @@ if __name__ == '__main__':
     problem_parser.add_argument('command', type=str, choices=['get_spec', 'get_info', 'submit_solution'])
     problem_parser.add_argument('id', type=int, choices=range(1, 2000))
 
-    # create the parser for the "b" command
-    parser_b = subparsers.add_parser('b', help='b help')
-    parser_b.add_argument('--baz', choices='XYZ', help='baz help')
+    parser_b = subparsers.add_parser('leaderboard', help='Who is the best?')
+    parser_b.add_argument('command', choices=['where_we_are'], help='DNIWE EBANOE')
 
     args = parser.parse_args()
 
@@ -222,3 +225,5 @@ if __name__ == '__main__':
             print(get_problem(args.id))
         elif args.command == 'submit_solution':
             print(submit_solution(args.id, sys.stdin.read()))
+        elif args.command == 'where_we_are':
+            print(where_we_are())
