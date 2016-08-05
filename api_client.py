@@ -210,7 +210,7 @@ if __name__ == '__main__':
 
     problem_parser = subparsers.add_parser('problem', help='Just do something with your problems, dude')
     problem_parser.add_argument('command', type=str, choices=['get_spec', 'get_info', 'submit_solution'])
-    problem_parser.add_argument('id', type=int, choices=range(1, 2000))
+    problem_parser.add_argument('id', type=int)
 
     parser_b = subparsers.add_parser('leaderboard', help='Who is the best?')
     parser_b.add_argument('command', choices=['where_we_are'], help='DNIWE EBANOE')
