@@ -188,7 +188,6 @@ def status():
             return b
 
 
-@cacher(cache_mode="permanent_by_arg", cache_params={'arg': 0})
 def get_problem(i):
     return status()['problems'][i-1]
 
